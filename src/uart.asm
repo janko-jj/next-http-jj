@@ -48,7 +48,15 @@ SMC_skip_baud_init
 		rla				; Now in Bit 0
 		or %10000000			; Set MSB to req. write to upper 7 bits
 		out (c), a
-		ret
+		; stale data taken out from FIFO at max speed
+.staleFIFOclean
+		ld bc, UART_GetStatus
+		in a, (c)
+		rra
+		ret nc
+		ld bc, UART_RxD
+		in a, (c)
+		jr .staleFIFOclean
 
 .baudTable:
 		DEFW 243,248,256,260,269,278,286,234	; 115K
@@ -106,7 +114,6 @@ write:
 	IFDEF TESTING
 		call debug
 	ENDIF
-
 		ld bc, UART_GetStatus
 .wait
 		in a, (c)
