@@ -22,7 +22,9 @@ CPUSpeed              		equ $07
 VARS                    	EQU $5c4b		; addr of variables area
 NEXT_ONE_r3             	EQU $19b8           	; find next variable
 
-ESPTimeout              	EQU 65535*4;65535 	; Use 10000 for 3.5MHz, but 28NHz needs to be 65535
+ESPTimeoutInSeconds       	EQU 60 ; Seconds, use this one to adjust timeout
+                        	; ESPTimeoutI is an 64-bit const which fits CheckESPTimeout
+ESPTimeoutI              	EQU 65535 + ((22*ESPTimeoutInSeconds/10)<<16) ; formula for 28MHz
 
 BORDCR				EQU 23624
 
